@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #canvas{
+            box-shadow: 0 0 1px 1px #ddd;
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="canvas" width="500px" height="500px"></canvas>
+
+    <script>
+        const cvs = document.getElementById('canvas');
+
+        const ctx = cvs.getContext('2d');
+        console.log(ctx);
+
+        ctx.fillStyle = 'red';
+        ctx.font = '30px Georgia';
+        // 描边文字
+        ctx.strokeText('panda', 200, 100);
+        // 填充文字
+        ctx.fillText('panda', 300, 100);
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #canvas{
+            box-shadow: 0 0 1px 1px #ddd;
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="canvas" width="500px" height="500px"></canvas>
+
+    <script>
+        const cvs = document.getElementById('canvas');
+
+        const ctx = cvs.getContext('2d');
+        console.log(ctx);
+
+        ctx.beginPath();
+        ctx.shadowColor = 'red';
+        ctx.shadowBlur = 10;
+        ctx.shadowOffsetX = 20;
+        // ctx.strokeRect(100, 100, 200, 100);
+        ctx.fillRect(100, 100, 200, 100);
+        console.log(ctx);
+
+    </script>
+</body>
+</html>

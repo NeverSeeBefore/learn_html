@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #canvas{
+            box-shadow: 0 0 1px 1px #ddd;
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="canvas" width="500px" height="500px"></canvas>
+
+    <script>
+        const cvs = document.getElementById('canvas');
+
+        const ctx = cvs.getContext('2d');
+        console.log(ctx);
+
+        ctx.save();
+        ctx.beginPath();
+        ctx.lineWidth = 10;
+        ctx.moveTo(100, 100);
+        ctx.lineTo(200, 100);
+        // 线端样式 butt\square\round
+        // ctx.lineCap = 'butt';
+        // ctx.lineCap = 'square';
+        ctx.lineCap = 'round';
+        ctx.stroke();
+
+
+        ctx.restore();
+        ctx.lineWidth = 10;
+        ctx.beginPath();
+        ctx.moveTo(100, 200);
+        ctx.lineTo(200, 200);
+        ctx.lineTo(100, 300);
+        // 两线连接处样式 round\bevel\miter
+        ctx.lineJoin = 'miter';
+        // miter 是 尖锐的， miterLimit 设置尖锐的大小，超过这个阀值会变成bevel
+        ctx.miterLimit = 2
+        ctx.stroke();
+    </script>
+</body>
+</html>

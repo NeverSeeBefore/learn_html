@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #canvas{
+            box-shadow: 0 0 1px 1px #ddd;
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="canvas" width="500px" height="500px"></canvas>
+
+    <script>
+        const cvs = document.getElementById('canvas');
+
+        const ctx = cvs.getContext('2d');
+
+        // 画圆 角度根据 Math.PI 计算
+        // 圆心x， 圆心y, 半径r，弧度起始， 弧度结束， 方向（顺时针0， 逆时针1）
+        // ctx.arc(100, 100, 50, 0, 2 * Math.PI, 1);
+        // ctx.stroke();
+
+        // 吃豆人
+        
+
+        let mouseSize = 0.5;
+        let open = true;
+        const timer = setInterval(() => {
+            ctx.clearRect(0, 0, 500, 500);
+            // 1. 眼睛
+            ctx.beginPath();
+            ctx.arc(100, 75, 5, 0, 2 * Math.PI, 0);
+            // ctx.fill();
+            ctx.stroke();
+            // 2. 身子
+            const halfMouse = mouseSize / 2;
+            ctx.beginPath();
+            ctx.arc(100, 100, 50, halfMouse * Math.PI, (2 - halfMouse) * Math.PI, 0);
+            ctx.lineTo(100, 100);
+            ctx.closePath();
+            ctx.stroke();
+            mouseSize = mouseSize + 0.01 * (open ? -1 : 1);
+            if (mouseSize <= 0) {
+                mouseSize = 0;
+                open = false;
+            }
+            else if (mouseSize >= 0.5) {
+                mouseSize = 0.5,
+                open = true;
+            }
+        }, 1000 / 60);
+
+    </script>
+</body>
+</html>

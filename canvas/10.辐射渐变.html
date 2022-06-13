@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #canvas{
+            box-shadow: 0 0 1px 1px #ddd;
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="canvas" width="500px" height="500px"></canvas>
+
+    <script>
+        const cvs = document.getElementById('canvas');
+
+        const ctx = cvs.getContext('2d');
+        console.log(ctx);
+
+        // 渐变的起始点是 坐标系的（0，0）
+        // createRadialGradient(起始圆x, 起始圆y, 起始圆r, 结束圆x, 结束圆y, 结束圆r)
+        // 两圆同心
+        const gradinet = ctx.createRadialGradient(100, 100, 30, 100, 100, 100);
+        // 设置渐变点， 0-1，颜色
+        gradinet.addColorStop(0, 'white');
+        gradinet.addColorStop(0.5, 'black');
+        gradinet.addColorStop(1, 'white');
+        ctx.fillStyle = gradinet;
+
+        ctx.fillRect(0, 0, 300, 300);
+    </script>
+</body>
+</html>

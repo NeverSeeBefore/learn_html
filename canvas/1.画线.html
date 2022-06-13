@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #canvas{
+            box-shadow: 0 0 1px 1px #ddd;
+        }
+    </style>
+</head>
+<body>
+    
+    <canvas id="canvas" width="500px" height="500px"></canvas>
+
+    <script>
+        const cvs = document.getElementById('canvas');
+
+        const ctx = cvs.getContext('2d');
+
+        // 拿起画笔
+        ctx.beginPath();
+        // 笔粗5px
+        ctx.lineWidth = 5;
+        // 移动到100， 100 位置
+        ctx.moveTo(100, 100);
+        // 画到100， 200 位置
+        ctx.lineTo(100, 200);
+        // 再画到200， 200
+        ctx.lineTo(200, 200);
+        // 闭合路径
+        ctx.closePath();
+        // 画到画布上
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.lineWidth = 2;
+        ctx.moveTo(200, 200);
+        ctx.lineTo(200, 100);
+        ctx.lineTo(100, 100);
+        ctx.stroke();
+        ctx.fill();
+
+
+    </script>
+</body>
+</html>
