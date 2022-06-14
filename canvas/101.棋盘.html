@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <canvas id="canvas" width="550" height="550"></canvas>
+
+    <script>
+        const cvs = document.getElementById('canvas');
+        const ctx = cvs.getContext('2d');
+        console.log(cvs, ctx);
+
+        const width = cvs.width;
+        const height = cvs.height;
+        const size = 50;
+        const row = Math.floor(height / size);
+        const col = Math.floor(width / size);
+
+        const squareList = [];
+        for(let i = 0; i < row; i ++) {
+            for(let j = 0; j < col; j ++) {
+                squareList.push([size * i, size * j, size, size, getColor(i, j)]);
+            }
+        }
+
+        function drawSquare(time) {
+            console.log(time, squareList.length);
+            if (!squareList.length) return;
+
+            const index = Math.floor(Math.random() * squareList.length);
+            const [x, y, width, height, color] = squareList.splice(index, 1)[0];
+            console.log(x, y, width, height, color);
+            ctx.beginPath();
+            ctx.fillStyle = color;
+            ctx.fillRect(x, y, width, height);
+
+            requestAnimationFrame(drawSquare);
+        }
+        requestAnimationFrame(drawSquare);
+
+        function getColor(row, col) {
+            return row % 2  === 1
+                ? (col % 2 === 1 ? '#363636' : '#53a0e9')
+                : (col % 2 === 1 ? '#53a0e9' : '#363636');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <canvas id="canvas" width="550" height="550"></canvas>
+
+    <script>
+      const cvs = document.getElementById("canvas");
+      const ctx = cvs.getContext("2d");
+      console.log(cvs, ctx);
+
+      const width = cvs.width;
+      const height = cvs.height;
+
+      const image = new Image();
+      image.src = '../search-group-fe.jpeg';
+      image.onload = function() {
+
+        // drawImage(图片， 起始位置x， 起始位置y)
+        // ctx.drawImage(image, 100, 100);
+
+        // drawImage(图片， 起始位置x， 起始位置y， 画出的图片宽， 高)
+        // ctx.drawImage(image, 100, 100, 200, 200);
+
+        // ctx.drawImage(image, 原图的截取位置x, y, 截取的宽, 高, 画布上的x, y, 画出的图宽, 高)
+        ctx.drawImage(image, 590, 1700, 300, 700, 100, 100, 150, 350);
+      }
+    </script>
+  </body>
+</html>

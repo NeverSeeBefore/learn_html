@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      html,
+      body {
+        width: 100%;
+        height: 10%;
+        margin: 0;
+        background-color: #000;
+      }
+      #canvas{
+        margin: 100px auto 0;
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="canvas" width="550" height="550"></canvas>
+
+    <script>
+      const cvs = document.getElementById("canvas");
+      const ctx = cvs.getContext("2d");
+      console.log(cvs, ctx);
+      // 宽度限定为 800
+      const MAX_WIDTH = 800;
+      cvs.width = 0;
+      cvs.height = 0;
+
+      let width = cvs.width;
+      let height = cvs.height;
+      // 图片实际大小与展示大小的比率；
+      let rate = 1;
+
+      ctx.save();
+      const img = new Image();
+      img.src = "../search-group-fe.jpeg";
+      img.onload = function (e) {
+        console.log('onload', e.target.width, e.target.height)
+        rate = e.target.width / MAX_WIDTH;
+        width = cvs.width = MAX_WIDTH;
+        height = cvs.height = e.target.height / rate;
+        console.log('onload', width, height);
+        ctx.clearRect(0, 0, width, height);
+        ctx.drawImage(img, 0, 0, width, height);
+      };
+
+      function mouseMoveHandler(e) {
+        const offsetX = e.clientX - cvs.offsetLeft;
+        const offsetY = e.clientY - cvs.offsetTop;
+        ctx.clearRect(0, 0, width, height);
+        ctx.drawImage(img, 0, 0, width, height);
+        let sourceX = offsetX - 40;
+        let sourceY = offsetY - 40;
+        let drawX = offsetX - 75;
+        let drawY = offsetY - 75;
+
+        // 左边界、上边界
+        sourceX < 0 && (sourceX = 0);
+        sourceY < 0 && (sourceY = 0);
+        drawX < 0 && (drawX = 0);
+        drawY < 0 && (drawY = 0);
+        // 右边界、下边界
+        sourceX > MAX_WIDTH - 80 && (sourceX = MAX_WIDTH - 80);
+        sourceY > height - 80 && (sourceY = height - 80);
+        drawX > MAX_WIDTH - 150 && (drawX = MAX_WIDTH - 150);
+        drawY > height - 150 && (drawY = height - 150);
+
+        console.log(sourceX, sourceY, drawX, drawY);
+        ctx.drawImage(img, sourceX * rate, sourceY * rate, 80 * rate, 80 * rate, drawX, drawY, 150, 150);
+        // ctx.drawImage(img, (offsetX - 40) * rate, (offsetY - 40) * rate, 80 * rate, 80 * rate, 0, 0, 200, 200);
+      }
+
+      cvs.addEventListener("mousedown", function (e) {
+        console.log(e);
+        console.log(e.offsetX);
+        ctx.beginPath();
+        ctx.moveTo(e.offsetX, e.offsetY);
+        cvs.addEventListener("mousemove", mouseMoveHandler);
+      });
+
+      cvs.addEventListener("mouseup", function () {
+        cvs.removeEventListener('mousemove', mouseMoveHandler);
+        ctx.clearRect(0, 0, width, height);
+        ctx.drawImage(img, 0, 0, width, height);
+      });
+    </script>
+  </body>
+</html>

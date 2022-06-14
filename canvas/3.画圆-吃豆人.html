@@ -1,60 +1,96 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
     <style>
-        #canvas{
-            box-shadow: 0 0 1px 1px #ddd;
-        }
+      #canvas {
+        box-shadow: 0 0 1px 1px #ddd;
+      }
     </style>
-</head>
-<body>
-
+  </head>
+  <body>
     <canvas id="canvas" width="500px" height="500px"></canvas>
 
     <script>
-        const cvs = document.getElementById('canvas');
+      const cvs = document.getElementById("canvas");
 
-        const ctx = cvs.getContext('2d');
+      const ctx = cvs.getContext("2d");
 
-        // 画圆 角度根据 Math.PI 计算
-        // 圆心x， 圆心y, 半径r，弧度起始， 弧度结束， 方向（顺时针0， 逆时针1）
-        // ctx.arc(100, 100, 50, 0, 2 * Math.PI, 1);
-        // ctx.stroke();
+      const width = cvs.width;
+      const height = cvs.height;
 
-        // 吃豆人
-        
+      // 画圆 角度根据 Math.PI 计算
+      // 圆心x， 圆心y, 半径r，弧度起始， 弧度结束， 方向（顺时针0， 逆时针1）
+      // ctx.arc(100, 100, 50, 0, 2 * Math.PI, 1);
+      // ctx.stroke();
 
+      let angle = 0;
+      function drwaCircle() {
+        if (angle > 360) return;
+        // ctx.clearRect(0, 0, width, height);
+        // 圆
+        ctx.save();
+        ctx.beginPath();
+        ctx.strokeStyle = "black";
+        ctx.arc(width / 2, height / 2, 100, 0, 2 * Math.PI, 1);
+        ctx.stroke();
+
+        // 圆心到边缘的线
+        ctx.restore();
+        ctx.beginPath();
+        ctx.strokeStyle = "blue";
+        ctx.moveTo(width / 2, height / 2);
+        ctx.lineTo(
+          width / 2 + 100 * Math.cos((angle * Math.PI) / 180),
+          height / 2 + 100 * Math.sin((angle * Math.PI) / 180)
+        );
+        ctx.stroke();
+        angle += 2;
+        requestAnimationFrame(drwaCircle);
+      }
+
+      requestAnimationFrame(drwaCircle);
+
+      // 吃豆人
+    //   animationFn();
+      function animationFn() {
         let mouseSize = 0.5;
         let open = true;
         const timer = setInterval(() => {
-            ctx.clearRect(0, 0, 500, 500);
-            // 1. 眼睛
-            ctx.beginPath();
-            ctx.arc(100, 75, 5, 0, 2 * Math.PI, 0);
-            // ctx.fill();
-            ctx.stroke();
-            // 2. 身子
-            const halfMouse = mouseSize / 2;
-            ctx.beginPath();
-            ctx.arc(100, 100, 50, halfMouse * Math.PI, (2 - halfMouse) * Math.PI, 0);
-            ctx.lineTo(100, 100);
-            ctx.closePath();
-            ctx.stroke();
-            mouseSize = mouseSize + 0.01 * (open ? -1 : 1);
-            if (mouseSize <= 0) {
-                mouseSize = 0;
-                open = false;
-            }
-            else if (mouseSize >= 0.5) {
-                mouseSize = 0.5,
-                open = true;
-            }
+          ctx.clearRect(0, 0, 500, 500);
+          // 1. 眼睛
+          ctx.beginPath();
+          ctx.arc(100, 75, 5, 0, 2 * Math.PI, 0);
+          // ctx.fill();
+          ctx.stroke();
+          // 2. 身子
+          const halfMouse = mouseSize / 2;
+          ctx.beginPath();
+          ctx.arc(
+            100,
+            100,
+            50,
+            halfMouse * Math.PI,
+            (2 - halfMouse) * Math.PI,
+            0
+          );
+          ctx.lineTo(100, 100);
+          ctx.closePath();
+          ctx.stroke();
+          mouseSize = mouseSize + 0.01 * (open ? -1 : 1);
+          if (mouseSize <= 0) {
+            mouseSize = 0;
+            open = false;
+          } else if (mouseSize >= 0.5) {
+            (mouseSize = 0.5), (open = true);
+          }
         }, 1000 / 60);
+      }
 
+      //
     </script>
-</body>
+  </body>
 </html>

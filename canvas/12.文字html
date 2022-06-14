@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <canvas id="canvas" width="500" height="500"></canvas>
+
+    <script>
+        const cvs = document.getElementById('canvas');
+        const ctx = cvs.getContext('2d');
+        console.log(cvs, ctx);
+
+        const width = cvs.width;
+        const height = cvs.height;
+        const gap = 50;
+        const row = Math.floor(height / gap);
+        const col = Math.floor(height / gap);
+        // 参考线
+        for(let i = 0; i <= row; i ++){
+            ctx.beginPath();
+            ctx.moveTo(0, i * gap);
+            ctx.lineTo(width, i * gap);
+            ctx.stroke();
+        }
+        for(let i = 0; i <= col; i ++){
+            ctx.beginPath();
+            ctx.moveTo(i * gap, 0);
+            ctx.lineTo(i * gap, height);
+            ctx.stroke();
+        }
+        // 中心点
+        ctx.beginPath();
+        ctx.strokeStyle = 'red';
+        ctx.arc(width/2, height/2, 5, 0, 2*Math.PI, 1);
+        ctx.arc(width/2, height/2, 25, 0, 2*Math.PI, 1);
+        // ctx.fill();
+        ctx.stroke();
+
+        ctx.beginPath();
+        // font = '字号 字体'
+        ctx.font = '40px serif';
+        // fillText(文字，位置x， 位置y， ?所占短度)， 超多所占短度 会被挤压
+        // ctx.fillText('前端要分享', 50, 50, 100);
+
+        // textAlign 水平方向，设置的是文本的哪一侧，与参考点（位置x\y）对齐
+        // left、right、center、start、end
+        // textBaseline 垂直方向
+        // top\middle\bottom\hanging\alphabetic\...
+
+        // 文字居中
+        // ctx.textAlign = 'center';
+        // ctx.fillText('前端要分享', width/2, height/2);
+
+        // 测试
+        // ctx.textAlign = 'end';
+        ctx.textBaseline = 'bottom';
+        ctx.fillText('前端要分享', width/2, height/2);
+    </script>
+</body>
+</html>
