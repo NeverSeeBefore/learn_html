@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        background-color: blue;
+      }
+      .wrapper {
+        width: 100%;
+        height: 100%;
+        display: flex;
+      }
+
+      .canvas-box {
+        flex: 1 1 auto;
+        min-width: 500px;
+        background-color: #fff;
+        padding: 50px;
+      }
+
+      .convas-content {
+        width: 100%;
+        height: 100%;
+        box-shadow: 0 0 1px 1px #00bcd4;
+      }
+
+      .tool-box {
+        width: 50px;
+        flex: 0 0 auto;
+        display: flex;
+        flex-direction: column;
+        margin-left: 10px;
+        background-color: #000;
+        box-sizing: border-box;
+        /* padding: 5px 0; */
+      }
+      .tool-btn {
+        color: #fff;
+        background-color: #00bcd4;
+        border: none;
+        margin: 5px 0;
+        height: 20px;
+      }
+      .tool-btn:hover {
+        background-color: #068e9f;
+      }
+      .tool-btn.active {
+        background-color: #068e9f;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrapper">
+      <div class="canvas-box">
+        <div class="convas-content">
+          <canvas id="canvas"></canvas>
+        </div>
+      </div>
+      <div class="tool-box">
+        <button class="tool-btn" data-type="circle">圆形</button>
+        <button class="tool-btn" data-type="rect">矩形</button>
+        <button class="tool-btn" data-type="line">直线</button>
+        <button class="tool-btn" data-type="pen">画笔</button>
+        <button class="tool-btn" data-type="undo">撤销</button>
+        <button class="tool-btn">6</button>
+      </div>
+    </div>
+
+    <script>
+      const Board = (function () {
+        let instance = null;
+        return function (options) {
+          if (instance) return instance;
+          this.options = options;
+          // canvas DOM
+          this.cvs = null;
+          // 画笔
+          this.ctx = null;
+          // canvas外层容器
+          this.convasWrap = null;
+          // 工具栏容器
+          this.toolsWrap = null;
+          // 当前使用的工具DOM
+          this.activeToolDom = null;
+          // 当前使用的工具类型
+          this.toolType = null;
+          // 绘画的参数；
+          this.drawInfo = null;
+          return (instance = this);
+        };
+      })();
+
+      Board.prototype.init = function () {
+        console.log("init", this.options);
+        const { canvas } = this.options;
+
+        // 获取canvas
+        this.cvs = document.querySelector(canvas);
+        this.ctx = this.cvs.getContext("2d");
+
+        // 初始化canvas宽高
+        this.setCanvasRect();
+        window.addEventListener("resize", this.setCanvasRect.bind(this));
+
+        // 初始化按钮点击
+        this.toolType = null;
+        this.toolsInit();
+      };
+
+      Board.prototype.setCanvasRect = function () {
+        const { convasWrap } = this.options;
+        this.convasWrap = document.querySelector(convasWrap);
+        this.cvs.width = this.convasWrap.offsetWidth;
+        this.cvs.height = this.convasWrap.offsetHeight;
+        console.log(
+          "setCanvasRect",
+          this.cvs.width,
+          this.cvs.height,
+          this.convasWrap.offsetWidth,
+          this.convasWrap.offsetHeight
+        );
+      };
+
+      Board.prototype.toolsInit = function () {
+        const { toolsWrap } = this.options;
+        this.toolsWrap = document.querySelector(toolsWrap);
+        this.toolsWrap.addEventListener(
+          "click",
+          function (e) {
+            if (this.activeToolDom) {
+              this.activeToolDom.classList.remove('active');
+            }
+            this.activeToolDom = e.target;
+            this.activeToolDom.classList.add('active');
+            this.toolType = e.target.dataset.type || null;
+          }.bind(this)
+        );
+      };
+
+      new Board({
+        canvas: "#canvas",
+        convasWrap: ".convas-content",
+        toolsWrap: ".tool-box",
+      }).init();
+    </script>
+  </body>
+</html>
