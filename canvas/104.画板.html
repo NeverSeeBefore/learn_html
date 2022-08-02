@@ -1,156 +1,302 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-    <style>
-      html,
-      body {
-        width: 100%;
-        height: 100%;
-        margin: 0;
-        padding: 0;
-        background-color: blue;
-      }
-      .wrapper {
-        width: 100%;
-        height: 100%;
-        display: flex;
-      }
 
-      .canvas-box {
-        flex: 1 1 auto;
-        min-width: 500px;
-        background-color: #fff;
-        padding: 50px;
-      }
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Document</title>
+  <style>
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      background-color: blue;
+    }
 
-      .convas-content {
-        width: 100%;
-        height: 100%;
-        box-shadow: 0 0 1px 1px #00bcd4;
-      }
+    .wrapper {
+      width: 100%;
+      height: 100%;
+      display: flex;
+    }
 
-      .tool-box {
-        width: 50px;
-        flex: 0 0 auto;
-        display: flex;
-        flex-direction: column;
-        margin-left: 10px;
-        background-color: #000;
-        box-sizing: border-box;
-        /* padding: 5px 0; */
-      }
-      .tool-btn {
-        color: #fff;
-        background-color: #00bcd4;
-        border: none;
-        margin: 5px 0;
-        height: 20px;
-      }
-      .tool-btn:hover {
-        background-color: #068e9f;
-      }
-      .tool-btn.active {
-        background-color: #068e9f;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="wrapper">
-      <div class="canvas-box">
-        <div class="convas-content">
-          <canvas id="canvas"></canvas>
-        </div>
-      </div>
-      <div class="tool-box">
-        <button class="tool-btn" data-type="circle">圆形</button>
-        <button class="tool-btn" data-type="rect">矩形</button>
-        <button class="tool-btn" data-type="line">直线</button>
-        <button class="tool-btn" data-type="pen">画笔</button>
-        <button class="tool-btn" data-type="undo">撤销</button>
-        <button class="tool-btn">6</button>
+    .canvas-box {
+      flex: 1 1 auto;
+      min-width: 500px;
+      background-color: #fff;
+      padding: 50px;
+    }
+
+    .convas-content {
+      width: 100%;
+      height: 100%;
+      box-shadow: 0 0 1px 1px #00bcd4;
+    }
+
+    .tool-box {
+      width: 50px;
+      flex: 0 0 auto;
+      display: flex;
+      flex-direction: column;
+      margin-left: 10px;
+      background-color: #000;
+      box-sizing: border-box;
+      /* padding: 5px 0; */
+    }
+
+    .tool-btn {
+      color: #fff;
+      background-color: #00bcd4;
+      border: none;
+      margin: 5px 0;
+      height: 20px;
+    }
+
+    .tool-btn:hover {
+      background-color: #068e9f;
+    }
+
+    .tool-btn.active {
+      background-color: #068e9f;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrapper">
+    <div class="canvas-box">
+      <div class="convas-content">
+        <canvas id="canvas"></canvas>
       </div>
     </div>
+    <div class="tool-box">
+      <button class="tool-btn" data-type="circle">圆形</button>
+      <button class="tool-btn" data-type="rect">矩形</button>
+      <button class="tool-btn" data-type="line">直线</button>
+      <button class="tool-btn" data-type="pencil">画笔</button>
+      <!-- <button class="tool-btn">6</button> -->
+    </div>
+  </div>
 
-    <script>
-      const Board = (function () {
-        let instance = null;
-        return function (options) {
-          if (instance) return instance;
-          this.options = options;
-          // canvas DOM
-          this.cvs = null;
-          // 画笔
-          this.ctx = null;
-          // canvas外层容器
-          this.convasWrap = null;
-          // 工具栏容器
-          this.toolsWrap = null;
-          // 当前使用的工具DOM
-          this.activeToolDom = null;
-          // 当前使用的工具类型
-          this.toolType = null;
-          // 绘画的参数；
-          this.drawInfo = null;
-          return (instance = this);
-        };
-      })();
-
-      Board.prototype.init = function () {
-        console.log("init", this.options);
-        const { canvas } = this.options;
-
-        // 获取canvas
-        this.cvs = document.querySelector(canvas);
-        this.ctx = this.cvs.getContext("2d");
-
-        // 初始化canvas宽高
-        this.setCanvasRect();
-        window.addEventListener("resize", this.setCanvasRect.bind(this));
-
-        // 初始化按钮点击
+  <script>
+    const Board = (function () {
+      let instance = null;
+      return function (options) {
+        if (instance) return instance;
+        this.options = options;
+        // canvas DOM
+        this.cvs = null;
+        // 画笔
+        this.ctx = null;
+        // canvas外层容器
+        this.convasWrap = null;
+        // 工具栏容器
+        this.toolsWrap = null;
+        // 当前使用的工具DOM
+        this.activeToolDom = null;
+        // 当前使用的工具类型
         this.toolType = null;
-        this.toolsInit();
-      };
+        this.toolTypeList = ['circle', 'rect', 'line', 'pencil']
+        // 绘画的参数；
+        this.drawInfo = {};
+        this.mouseDown = false;
+        this.startPoint = null;
 
-      Board.prototype.setCanvasRect = function () {
-        const { convasWrap } = this.options;
-        this.convasWrap = document.querySelector(convasWrap);
-        this.cvs.width = this.convasWrap.offsetWidth;
-        this.cvs.height = this.convasWrap.offsetHeight;
-        console.log(
-          "setCanvasRect",
-          this.cvs.width,
-          this.cvs.height,
-          this.convasWrap.offsetWidth,
-          this.convasWrap.offsetHeight
-        );
+        // 绘制历史
+        this.history = [];
+        // 绘制了图形
+        this.drawed = false;
+        return (instance = this);
       };
+    })();
 
-      Board.prototype.toolsInit = function () {
-        const { toolsWrap } = this.options;
-        this.toolsWrap = document.querySelector(toolsWrap);
-        this.toolsWrap.addEventListener(
-          "click",
-          function (e) {
-            if (this.activeToolDom) {
-              this.activeToolDom.classList.remove('active');
-            }
-            this.activeToolDom = e.target;
-            this.activeToolDom.classList.add('active');
-            this.toolType = e.target.dataset.type || null;
-          }.bind(this)
-        );
-      };
+    Board.prototype.init = function () {
+      console.log("init", this.options);
+      const { canvas } = this.options;
 
-      new Board({
-        canvas: "#canvas",
-        convasWrap: ".convas-content",
-        toolsWrap: ".tool-box",
-      }).init();
-    </script>
-  </body>
+      // 获取canvas
+      this.cvs = document.querySelector(canvas);
+      this.ctx = this.cvs.getContext("2d");
+
+      // 初始化canvas宽高
+      this.setCanvasRect();
+      window.addEventListener("resize", this.setCanvasRect.bind(this));
+
+      // 初始化按钮点击
+      this.toolType = null;
+      this.toolsInit();
+
+      // 初始化画板事件
+      this.cvs.addEventListener('mousedown', this.onMousedown.bind(this));
+      document.addEventListener('mousemove', this.onMusemove.bind(this));
+      document.addEventListener('mouseup', this.onMouseup.bind(this));
+    };
+
+    Board.prototype.setCanvasRect = function () {
+      const { convasWrap } = this.options;
+      this.convasWrap = document.querySelector(convasWrap);
+      this.cvs.width = this.convasWrap.offsetWidth;
+      this.cvs.height = this.convasWrap.offsetHeight;
+      // console.log(
+      //   "setCanvasRect",
+      //   this.cvs.width,
+      //   this.cvs.height,
+      //   this.convasWrap.offsetWidth,
+      //   this.convasWrap.offsetHeight
+      // );
+    };
+
+    Board.prototype.toolsInit = function () {
+      const { toolsWrap } = this.options;
+      this.toolsWrap = document.querySelector(toolsWrap);
+      // 图形工具
+      this.toolsWrap.addEventListener(
+        "click",
+        function (e) {
+          const type = e.target.dataset.type || null;
+          if (!this.toolTypeList.includes(type)) { return; }
+          if (this.activeToolDom) {
+            this.activeToolDom.classList.remove('active');
+          }
+          this.activeToolDom = e.target;
+          this.activeToolDom.classList.add('active');
+          this.toolType = type;
+        }.bind(this)
+      );
+
+      // undo
+      const undoBtn = document.createElement('button');
+      undoBtn.className = 'tool-btn';
+      undoBtn.innerText = '撤销';
+      undoBtn.onclick = function () {
+        this.ctx.clearRect(0, 0, this.cvs.width, this.cvs.height);
+        this.history.pop();
+        if (this.history.length) {
+          this.ctx.putImageData(this.history[this.history.length - 1], 0, 0);
+        }
+      }.bind(this);
+      this.toolsWrap.appendChild(undoBtn);
+    };
+
+
+    Board.prototype.onMousedown = function (e) {
+
+      this.mouseDown = true;
+      const startX = e.pageX - this.cvs.offsetLeft;
+      const startY = e.pageY - this.cvs.offsetTop;
+      this.startPoint = {
+        startX,
+        startY,
+      }
+    };
+    Board.prototype.onMusemove = function (e) {
+      if (this.mouseDown) {
+        const endX = e.pageX - this.cvs.offsetLeft;
+        const endY = e.pageY - this.cvs.offsetTop;
+        this.endPoint = {
+          endX,
+          endY
+        }
+        const w = Math.abs(endX - this.startPoint.startX);
+        const h = Math.abs(endY - this.startPoint.startY);
+
+        this.drawInfo = {
+          ...this.startPoint,
+          lastEndX: this.drawInfo.endX,
+          lastEndY: this.drawInfo.endY,
+          endX,
+          endY,
+          w, h
+        };
+
+        switch (this.toolType) {
+          case 'circle':
+            this.drawCircle();
+            break;
+          case 'rect':
+            this.drawRect();
+            break;
+          case 'line':
+            this.drawLine();
+            break;
+          case 'pencil':
+            this.pencil();
+            break;
+        }
+      }
+
+    }
+
+    Board.prototype.onMouseup = function (e) {
+      this.mouseDown = false;
+      this.drawInfo = {};
+      if (this.drawed) {
+        this.drawed = false;
+        this.history.push(this.ctx.getImageData(0, 0, this.cvs.width, this.cvs.height));
+      }
+      console.log(this.history);
+    };
+
+    Board.prototype.drawCircle = function () {
+      this.drawed = true;
+      const { startX, startY, endX, endY, w, h } = this.drawInfo;
+      const centerX = Math.abs((startX + endX) / 2);
+      const centerY = Math.abs((startY + endY) / 2);
+      const radius = Math.sqrt((w / 2) ** 2 + (h / 2) ** 2);
+      this.ctx.clearRect(0, 0, this.cvs.width, this.cvs.height);
+      if (this.history.length) {
+        this.ctx.putImageData(this.history[this.history.length - 1], 0, 0);
+      }
+      this.ctx.beginPath();
+      this.ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+      this.ctx.stroke();
+    };
+
+    Board.prototype.drawRect = function () {
+      this.drawed = true;
+      const { startX, startY, endX, endY, w, h } = this.drawInfo;
+      this.ctx.clearRect(0, 0, this.cvs.width, this.cvs.height);
+      if (this.history.length) {
+        this.ctx.putImageData(this.history[this.history.length - 1], 0, 0);
+      }
+      this.ctx.beginPath();
+      const rectX = Math.min(startX, endX);
+      const rectY = Math.min(startY, endY);
+      this.ctx.strokeRect(rectX, rectY, w, h);
+    }
+
+    Board.prototype.drawLine = function () {
+      this.drawed = true;
+      const { startX, startY, endX, endY, w, h } = this.drawInfo;
+      this.ctx.clearRect(0, 0, this.cvs.width, this.cvs.height);
+      if (this.history.length) {
+        this.ctx.putImageData(this.history[this.history.length - 1], 0, 0);
+      }
+      this.ctx.beginPath();
+      this.ctx.moveTo(startX, startY);
+      this.ctx.lineTo(endX, endY);
+      this.ctx.stroke();
+    }
+
+
+    Board.prototype.pencil = function () {
+      this.drawed = true;
+      const { startX, startY, lastEndX, lastEndY, endX, endY, w, h } = this.drawInfo;
+      this.ctx.save();
+      this.ctx.beginPath();
+      this.ctx.moveTo(lastEndX !== undefined ? lastEndX : startX, lastEndY !== undefined ? lastEndY : startY);
+      this.ctx.lineTo(endX, endY);
+      this.ctx.stroke();
+      this.ctx.restore();
+    }
+    new Board({
+      canvas: "#canvas",
+      convasWrap: ".convas-content",
+      toolsWrap: ".tool-box",
+    }).init();
+  </script>
+</body>
+
 </html>
